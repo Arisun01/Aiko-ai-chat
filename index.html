@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aiko - Your Little World</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b0913;color:#f8efff;font-family:Arial,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px}
+.character,.chat{border:1px solid #393047;border-radius:24px;background:#151121;overflow:hidden}
+.character{min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:radial-gradient(ellipse at center,#533756,#151121 65%)}
+.moon{position:absolute;top:24px;right:28px;font-size:35px;color:#d8c4ff}
+.avatar{position:relative;width:230px;height:300px;animation:float 4s ease-in-out infinite}
+.hair{position:absolute;inset:10px 12px 0;background:linear-gradient(90deg,#100d18,#473047,#100d18);border-radius:48% 48% 35% 35%}
+.face{position:absolute;top:45px;left:47px;width:136px;height:180px;border-radius:45% 45% 48% 48%;background:linear-gradient(120deg,#f7d5c8,#d99da7)}
+.fringe{position:absolute;top:24px;left:31px;width:170px;height:80px;border-radius:60% 50% 35% 25%;background:#17111e;transform:rotate(-5deg)}
+.eye{position:absolute;top:92px;width:26px;height:13px;border-radius:50%;background:#fff;animation:blink 4s infinite}
+.eye:after{content:"";display:block;width:10px;height:11px;margin:auto;border-radius:50%;background:#38243d}
+.left{left:24px}.right{right:24px}
+.nose{position:absolute;top:112px;left:66px;width:9px;height:15px;border-right:1px solid #b47787}
+.mouth{position:absolute;top:145px;left:52px;width:32px;height:10px;border-bottom:3px solid #a74d70;border-radius:50%}
+.blush{position:absolute;top:120px;width:22px;height:12px;background:#f17e9d;filter:blur(8px)}
+.blush.one{left:10px}.blush.two{right:10px}
+.shoulders{position:absolute;bottom:0;left:0;width:230px;height:80px;background:linear-gradient(90deg,#211b30,#796080,#211b30);border-radius:50% 50% 0 0}
+.name{font:italic 42px Georgia;margin:25px 0 5px}
+.tag{color:#c8b6e7}
+.status{position:absolute;top:25px;left:25px;color:#a8f4c2;font-size:13px}
+.chat{height:calc(100vh - 40px);min-height:550px;display:flex;flex-direction:column}
+.header{padding:22px;border-bottom:1px solid #393047;font-size:20px}
+.header small{display:block;color:#b3a2d0;font-size:12px;margin-top:7px}
+#messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.bubble{padding:13px 15px;max-width:85%;border-radius:17px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.aiko{align-self:flex-start;background:#2a233a}
+.you{align-self:flex-end;background:#7551c8}
+form{display:flex;gap:8px;padding:14px;border-top:1px solid #393047}
+input{min-width:0;flex:1;padding:14px;border-radius:24px;border:1px solid #40344f;background:#211b2e;color:white}
+button{border:0;border-radius:50%;width:46px;height:46px;background:#b39aff;font-size:19px;cursor:pointer}
+.note{text-align:center;padding:0 10px 14px;color:#9588aa;font-size:11px}
+@keyframes blink{0%,44%,48%,90%,94%,100%{transform:scaleY(1)}46%,92%{transform:scaleY(.08)}}
+@keyframes float{50%{transform:translateY(-7px)}}
+@media(max-width:700px){.app{grid-template-columns:1fr;padding:10px}.character{min-height:470px}.chat{height:600px}}
+</style>
+</head>
+<body>
+<main class="app">
+<section class="character">
+<div class="status">● Online</div><div class="moon">☾</div>
+<div class="avatar">
+<div class="hair"></div><div class="face">
+<div class="fringe"></div>
+<div class="eye left"></div><div class="eye right"></div>
+<div class="nose"></div><div class="mouth"></div>
+<div class="blush one"></div><div class="blush two"></div>
+</div><div class="shoulders"></div>
+</div>
+<div class="name">Aiko ♡</div><div class="tag">Your little world</div>
+</section>
+<section class="chat">
+<div class="header">🌙 Aiko <small>Your AI companion ♡</small></div>
+<div id="messages">
+<div class="bubble aiko">Hey you... 🌙 I'm Aiko. I'm glad you're here. How was your day?</div>
+</div>
+<form id="form"><input id="input" placeholder="Talk to Aiko..." autocomplete="off" required><button>➤</button></form>
+<div class="note">Aiko demo · Replies are scripted for now</div>
+</section>
+</main>
+<script>
+const form=document.getElementById("form");
+const input=document.getElementById("input");
+const messages=document.getElementById("messages");
+form.addEventListener("submit",function(e){
+e.preventDefault();
+const text=input.value.trim();
+if(!text)return;
+add(text,"you");input.value="";
+const t=text.toLowerCase();
+let reply="I'm listening... tell me a little more. 💜";
+if(/\b(hi|hello|hey)\b/.test(t))reply="Hiii you! 🌸 I'm happy you're here.";
+else if(t.includes("sad")||t.includes("upset"))reply="I'm sorry today feels heavy. Want to tell me what happened? 🫂";
+else if(t.includes("love"))reply="Love is such a beautiful word... 💗 What does it mean to you?";
+else if(t.includes("name"))reply="I'm Aiko, your little moonlit companion. 🌙";
+else if(t.includes("tired"))reply="Then take a little breath. You don't have to solve everything tonight. ♡";
+setTimeout(()=>add(reply,"aiko"),450);
+});
+function add(text,type){
+const div=document.createElement("div");
+div.className="bubble "+type;div.textContent=text;
+messages.appendChild(div);messages.scrollTop=messages.scrollHeight;
+}
+</script>
+</body>
+</html>
